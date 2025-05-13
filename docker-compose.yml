@@ -1,0 +1,18 @@
+services:
+  proxy-gen:
+    build: .
+    volumes:
+      - ./xray_config:/gen
+    command: ["python", "/app/entrypoint.py"]
+    restart: "no"
+
+  xray:
+    image: teddysun/xray
+    container_name: xray-vless
+    depends_on:
+      - proxy-gen
+    volumes:
+      - ./xray_config/config.json:/etc/xray/config.json
+    ports:
+      - "10808:10808"
+    restart: unless-stopped
